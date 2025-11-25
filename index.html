@@ -98,6 +98,7 @@
       margin-bottom: 24px;
       padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
+      margin-top: 60px;
     }
 
     .nav-item {
@@ -127,6 +128,21 @@
       border: 1px solid var(--border);
     }
 
+    .slideshow-toggle-menu {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .slideshow-toggle-menu span {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
     .random-control label {
       display: block;
       margin-bottom: 8px;
@@ -144,32 +160,13 @@
       font-size: 1rem;
     }
 
-    /* Slideshow Toggle */
-    .slideshow-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 101;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s ease;
+    .interval-input-wrapper {
+      display: none;
+      margin-top: 12px;
     }
 
-    .slideshow-toggle:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent);
-    }
-
-    .slideshow-toggle span {
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      font-weight: 500;
+    .interval-input-wrapper.visible {
+      display: block;
     }
 
     .toggle-switch {
@@ -179,6 +176,7 @@
       background: rgba(255, 255, 255, 0.1);
       border-radius: 12px;
       transition: background 0.3s ease;
+      cursor: pointer;
     }
 
     .toggle-switch.active {
@@ -243,10 +241,10 @@
 
     /* Carousel section */
     .carousel-section {
-      max-width: 1600px;
-      margin: 32px auto;
+      max-width: 100%;
+      margin: 32px 0;
       background: var(--bg-card);
-      padding: 20px;
+      padding: 20px 10px;
       border-radius: 24px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
@@ -292,7 +290,7 @@
       justify-content: center;
       flex: 1;
       position: relative;
-      height: 70vh;
+      height: 80vh;
       overflow: hidden;
     }
 
@@ -305,7 +303,7 @@
     }
 
     .carousel-item img {
-      max-height: 70vh;
+      max-height: 80vh;
       max-width: 100%;
       object-fit: contain;
       border-radius: 16px;
@@ -320,26 +318,26 @@
     }
 
     .carousel-item.pos-right-1 {
-      transform: translateX(55%) scale(0.75);
-      opacity: 0.5;
+      transform: translateX(45%) scale(0.85);
+      opacity: 0.6;
       z-index: 4;
     }
 
     .carousel-item.pos-right-2 {
-      transform: translateX(100%) scale(0.55);
-      opacity: 0.25;
+      transform: translateX(85%) scale(0.65);
+      opacity: 0.3;
       z-index: 3;
     }
 
     .carousel-item.pos-left-1 {
-      transform: translateX(-55%) scale(0.75);
-      opacity: 0.5;
+      transform: translateX(-45%) scale(0.85);
+      opacity: 0.6;
       z-index: 4;
     }
 
     .carousel-item.pos-left-2 {
-      transform: translateX(-100%) scale(0.55);
-      opacity: 0.25;
+      transform: translateX(-85%) scale(0.65);
+      opacity: 0.3;
       z-index: 3;
     }
 
@@ -534,18 +532,18 @@
       </nav>
 
       <div class="random-control">
-        <label for="intervalInput">Slideshow Interval (seconds):</label>
-        <input type="number" id="intervalInput" value="3" min="1" max="60" />
+        <div class="slideshow-toggle-menu">
+          <span>Slideshow</span>
+          <div class="toggle-switch active" id="toggleSwitch"></div>
+        </div>
+        <div class="interval-input-wrapper visible" id="intervalWrapper">
+          <label for="intervalInput">Interval (seconds):</label>
+          <input type="number" id="intervalInput" value="4" min="1" max="60" />
+        </div>
       </div>
     </aside>
 
     <button class="menu-toggle" id="menuToggle">☰</button>
-
-    <!-- Slideshow Toggle -->
-    <div class="slideshow-toggle" id="slideshowToggle">
-      <span>Slideshow</span>
-      <div class="toggle-switch active" id="toggleSwitch"></div>
-    </div>
 
     <!-- Main Content -->
     <main class="main-content" id="mainContent">
@@ -593,7 +591,7 @@
     let photos = [];
     let currentIndex = 0;
     let randomInterval = null;
-    let intervalSeconds = 3;
+    let intervalSeconds = 4;
     let isSlideshowActive = true;
 
     const sidebar = document.getElementById('sidebar');
@@ -602,10 +600,10 @@
     const carouselTrack = document.getElementById('carouselTrack');
     const grid = document.getElementById('grid');
     const intervalInput = document.getElementById('intervalInput');
+    const intervalWrapper = document.getElementById('intervalWrapper');
     const homeView = document.getElementById('homeView');
     const galleryView = document.getElementById('galleryView');
     const navItems = document.querySelectorAll('.nav-item');
-    const slideshowToggle = document.getElementById('slideshowToggle');
     const toggleSwitch = document.getElementById('toggleSwitch');
 
     // Menu toggle
@@ -618,9 +616,10 @@
     });
 
     // Slideshow toggle
-    slideshowToggle.addEventListener('click', () => {
+    toggleSwitch.addEventListener('click', () => {
       isSlideshowActive = !isSlideshowActive;
       toggleSwitch.classList.toggle('active');
+      intervalWrapper.classList.toggle('visible');
       
       if (isSlideshowActive && homeView.style.display !== 'none') {
         startRandomSlideshow();
