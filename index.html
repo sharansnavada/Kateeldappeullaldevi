@@ -25,7 +25,7 @@
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Noto Sans Kannada', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: var(--bg-dark);
       color: var(--text-primary);
       line-height: 1.6;
@@ -100,12 +100,6 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .sidebar-header h3 {
-      font-size: 1.1rem;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
     .nav-item {
       padding: 12px 16px;
       margin: 8px 0;
@@ -150,6 +144,63 @@
       font-size: 1rem;
     }
 
+    /* Slideshow Toggle */
+    .slideshow-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 101;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .slideshow-toggle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+
+    .slideshow-toggle span {
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 24px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .toggle-switch.active {
+      background: var(--accent);
+    }
+
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .toggle-switch.active::after {
+      transform: translateX(24px);
+    }
+
     /* Main content */
     .main-content {
       flex: 1;
@@ -165,7 +216,7 @@
     /* Header */
     header {
       text-align: center;
-      padding: 40px 20px 32px;
+      padding: 60px 20px 32px;
       max-width: 1400px;
       margin: 0 auto;
     }
@@ -177,40 +228,39 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 12px;
+      margin-bottom: 20px;
       letter-spacing: -0.5px;
     }
 
-    .subtitle {
-      color: var(--accent);
-      font-size: 1.2rem;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    header p {
+    .shloka {
       color: var(--text-secondary);
-      font-size: 1rem;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto;
       font-weight: 300;
     }
 
     /* Carousel section */
     .carousel-section {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 32px auto;
       background: var(--bg-card);
-      padding: 24px;
+      padding: 20px;
       border-radius: 24px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       position: relative;
+      overflow: hidden;
     }
 
     .carousel-container {
       display: flex;
       align-items: center;
-      gap: 16px;
+      justify-content: center;
+      gap: 12px;
       position: relative;
+      min-height: 70vh;
     }
 
     .carousel-nav {
@@ -227,6 +277,7 @@
       font-size: 1.5rem;
       transition: all 0.3s ease;
       flex-shrink: 0;
+      z-index: 10;
     }
 
     .carousel-nav:hover {
@@ -235,49 +286,67 @@
       transform: scale(1.1);
     }
 
-    .carousel-main {
-      flex: 1;
+    .carousel-track {
       display: flex;
-      justify-content: center;
       align-items: center;
-      min-height: 60vh;
+      justify-content: center;
+      flex: 1;
+      position: relative;
+      height: 70vh;
+      overflow: hidden;
     }
 
-    .carousel-main img {
+    .carousel-item {
+      position: absolute;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-item img {
+      max-height: 70vh;
       max-width: 100%;
-      max-height: 60vh;
       object-fit: contain;
       border-radius: 16px;
-      animation: fadeIn 0.5s ease;
+      display: block;
     }
 
-    .carousel-side {
-      width: 180px;
-      height: 240px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.6;
-      transition: opacity 0.3s ease;
+    /* Positions for 5 visible items */
+    .carousel-item.pos-center {
+      transform: translateX(0) scale(1);
+      opacity: 1;
+      z-index: 5;
     }
 
-    .carousel-side img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      border-radius: 12px;
-      filter: brightness(0.7);
+    .carousel-item.pos-right-1 {
+      transform: translateX(55%) scale(0.75);
+      opacity: 0.5;
+      z-index: 4;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
+    .carousel-item.pos-right-2 {
+      transform: translateX(100%) scale(0.55);
+      opacity: 0.25;
+      z-index: 3;
+    }
+
+    .carousel-item.pos-left-1 {
+      transform: translateX(-55%) scale(0.75);
+      opacity: 0.5;
+      z-index: 4;
+    }
+
+    .carousel-item.pos-left-2 {
+      transform: translateX(-100%) scale(0.55);
+      opacity: 0.25;
+      z-index: 3;
+    }
+
+    .carousel-item.hidden {
+      transform: translateX(0) scale(0.3);
+      opacity: 0;
+      z-index: 1;
     }
 
     /* Gallery grid */
@@ -345,7 +414,8 @@
 
     /* Responsive */
     @media (max-width: 1024px) {
-      .carousel-side {
+      .carousel-item.pos-right-2,
+      .carousel-item.pos-left-2 {
         display: none;
       }
     }
@@ -371,22 +441,34 @@
         font-size: 2rem;
       }
 
+      .shloka {
+        font-size: 0.95rem;
+      }
+
       .carousel-section {
         padding: 16px;
       }
 
-      .carousel-main {
-        min-height: 40vh;
+      .carousel-track {
+        height: 50vh;
       }
 
-      .carousel-main img {
-        max-height: 40vh;
+      .carousel-item img {
+        max-height: 50vh;
       }
 
       .carousel-nav {
         width: 40px;
         height: 40px;
         font-size: 1.2rem;
+      }
+
+      .carousel-item.pos-right-1 {
+        transform: translateX(70%) scale(0.65);
+      }
+
+      .carousel-item.pos-left-1 {
+        transform: translateX(-70%) scale(0.65);
       }
 
       .grid {
@@ -396,6 +478,16 @@
 
       .grid img {
         height: 140px;
+      }
+
+      .slideshow-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 8px 12px;
+      }
+
+      .slideshow-toggle span {
+        display: none;
       }
     }
 
@@ -430,7 +522,6 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <h3>☰ Menu</h3>
       </div>
       
       <nav>
@@ -443,20 +534,29 @@
       </nav>
 
       <div class="random-control">
-        <label for="intervalInput">Random Slideshow (seconds):</label>
+        <label for="intervalInput">Slideshow Interval (seconds):</label>
         <input type="number" id="intervalInput" value="3" min="1" max="60" />
       </div>
     </aside>
 
     <button class="menu-toggle" id="menuToggle">☰</button>
 
+    <!-- Slideshow Toggle -->
+    <div class="slideshow-toggle" id="slideshowToggle">
+      <span>Slideshow</span>
+      <div class="toggle-switch active" id="toggleSwitch"></div>
+    </div>
+
     <!-- Main Content -->
     <main class="main-content" id="mainContent">
       <header>
-        <h1>Kateel Shree Durgaparameshwari Devi</h1>
-        <p class="subtitle">Namaste Bhramarambike namaste Durgeparame namah</p>
-        <p>Namaste nandanite kalliashrita digambare<br>
-        Arunana Sannuti beteranna varadayini</p>
+        <h1>ಕಟೀಲ ಶ್ರೀ ದುರ್ಗಾಪರಮೇಶ್ವರಿ ದೇವಿ</h1>
+        <div class="shloka">
+          ನಮಸ್ತೇ ಭ್ರಮರಾಂಬಿಕೇ ನಮಸ್ತೇ ದುರ್ಗೇ ನಮೋ ನಮಃ<br>
+          ನಮಸ್ತೇ ನಂದಿನೀತೀರೇ ಕಟಿಲಸ್ಥಿತ ದಿಗಂಬರೇ<br>
+          ಅರುಣಾಸುರ ಸಂಹಂತ್ರೀ ಭಕ್ತಾನಾಂ ವರದಾಯಿನೀ<br>
+          ಜಾಬಾಲಿಮುನಿ ಸಂಪೂಜ್ಯೇ ಕಾತ್ಯಾಯನಿ ನಮೋಽಸ್ತು ತೇ
+        </div>
       </header>
 
       <!-- Home View: Carousel Only -->
@@ -465,16 +565,8 @@
           <div class="carousel-container">
             <button class="carousel-nav" id="prevBtn">‹</button>
             
-            <div class="carousel-side" id="prevPhoto">
-              <img src="" alt="Previous photo" />
-            </div>
-            
-            <div class="carousel-main">
-              <img id="mainPhoto" src="" alt="Main photo" />
-            </div>
-            
-            <div class="carousel-side" id="nextPhoto">
-              <img src="" alt="Next photo" />
+            <div class="carousel-track" id="carouselTrack">
+              <!-- Images will be dynamically inserted here -->
             </div>
             
             <button class="carousel-nav" id="nextBtn">›</button>
@@ -491,7 +583,7 @@
       </section>
 
       <footer>
-        <p>🙏 Jai Bhramarambite ! Jai Kateel Devi ! • © <span id="year"></span></p>
+        <p>🙏 ಜೈ ಭ್ರಮರಾಂಬಿತೇ ! ಜೈ ಕಟೀಲ ದೇವಿ ! • © <span id="year"></span></p>
       </footer>
     </main>
   </div>
@@ -502,18 +594,19 @@
     let currentIndex = 0;
     let randomInterval = null;
     let intervalSeconds = 3;
+    let isSlideshowActive = true;
 
     const sidebar = document.getElementById('sidebar');
     const menuToggle = document.getElementById('menuToggle');
     const mainContent = document.getElementById('mainContent');
-    const mainPhoto = document.getElementById('mainPhoto');
-    const prevPhoto = document.getElementById('prevPhoto').querySelector('img');
-    const nextPhoto = document.getElementById('nextPhoto').querySelector('img');
+    const carouselTrack = document.getElementById('carouselTrack');
     const grid = document.getElementById('grid');
     const intervalInput = document.getElementById('intervalInput');
     const homeView = document.getElementById('homeView');
     const galleryView = document.getElementById('galleryView');
     const navItems = document.querySelectorAll('.nav-item');
+    const slideshowToggle = document.getElementById('slideshowToggle');
+    const toggleSwitch = document.getElementById('toggleSwitch');
 
     // Menu toggle
     menuToggle.addEventListener('click', () => {
@@ -521,6 +614,18 @@
       if (window.innerWidth > 768) {
         sidebar.classList.toggle('hidden');
         mainContent.classList.toggle('expanded');
+      }
+    });
+
+    // Slideshow toggle
+    slideshowToggle.addEventListener('click', () => {
+      isSlideshowActive = !isSlideshowActive;
+      toggleSwitch.classList.toggle('active');
+      
+      if (isSlideshowActive && homeView.style.display !== 'none') {
+        startRandomSlideshow();
+      } else {
+        stopRandomSlideshow();
       }
     });
 
@@ -534,7 +639,9 @@
         if (view === 'home') {
           homeView.style.display = 'block';
           galleryView.style.display = 'none';
-          startRandomSlideshow();
+          if (isSlideshowActive) {
+            startRandomSlideshow();
+          }
         } else if (view === 'gallery') {
           homeView.style.display = 'none';
           galleryView.style.display = 'block';
@@ -562,24 +669,39 @@
         currentIndex = photos.length - 1; // Start with latest photo
         renderCarousel();
         renderGallery();
-        startRandomSlideshow();
+        if (isSlideshowActive) {
+          startRandomSlideshow();
+        }
       } catch (e) {
         console.error(e);
         grid.innerHTML = '<p class="loading" style="color:#ff6b35">Failed to load photos.json</p>';
       }
     }
 
-    // Render carousel
+    // Render carousel with 5 visible items
     function renderCarousel() {
       if (photos.length === 0) return;
       
-      mainPhoto.src = photos[currentIndex];
+      carouselTrack.innerHTML = '';
       
-      const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
-      const nextIndex = (currentIndex + 1) % photos.length;
+      // Create 5 carousel items (or fewer if not enough photos)
+      const positions = ['left-2', 'left-1', 'center', 'right-1', 'right-2'];
+      const numVisible = Math.min(5, photos.length);
       
-      prevPhoto.src = photos[prevIndex];
-      nextPhoto.src = photos[nextIndex];
+      for (let i = 0; i < numVisible; i++) {
+        const offset = i - 2; // -2, -1, 0, 1, 2
+        const photoIndex = (currentIndex + offset + photos.length) % photos.length;
+        
+        const item = document.createElement('div');
+        item.className = `carousel-item pos-${positions[i]}`;
+        
+        const img = document.createElement('img');
+        img.src = photos[photoIndex];
+        img.alt = `Photo ${photoIndex}`;
+        
+        item.appendChild(img);
+        carouselTrack.appendChild(item);
+      }
     }
 
     // Render gallery
@@ -592,13 +714,14 @@
         img.loading = 'lazy';
         img.addEventListener('click', () => {
           currentIndex = i;
-          // Switch to home view
           homeView.style.display = 'block';
           galleryView.style.display = 'none';
           navItems[0].classList.add('active');
           navItems[1].classList.remove('active');
           renderCarousel();
-          startRandomSlideshow();
+          if (isSlideshowActive) {
+            startRandomSlideshow();
+          }
           window.scrollTo({ top: 0, behavior: 'smooth' });
         });
         grid.appendChild(img);
@@ -610,20 +733,24 @@
       stopRandomSlideshow();
       currentIndex = (currentIndex - 1 + photos.length) % photos.length;
       renderCarousel();
-      startRandomSlideshow();
+      if (isSlideshowActive) {
+        startRandomSlideshow();
+      }
     });
 
     document.getElementById('nextBtn').addEventListener('click', () => {
       stopRandomSlideshow();
       currentIndex = (currentIndex + 1) % photos.length;
       renderCarousel();
-      startRandomSlideshow();
+      if (isSlideshowActive) {
+        startRandomSlideshow();
+      }
     });
 
     // Random slideshow
     function startRandomSlideshow() {
       stopRandomSlideshow();
-      if (photos.length === 0) return;
+      if (photos.length === 0 || !isSlideshowActive) return;
       
       intervalSeconds = parseInt(intervalInput.value) || 3;
       
@@ -642,7 +769,7 @@
 
     // Interval input change
     intervalInput.addEventListener('change', () => {
-      if (homeView.style.display !== 'none') {
+      if (homeView.style.display !== 'none' && isSlideshowActive) {
         startRandomSlideshow();
       }
     });
